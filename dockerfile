@@ -1,6 +1,10 @@
 FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
-RUN apt-get update && apt-get install -y git build-essential
+# libcairo2 is needed by cairocffi (via pygarment's SVG pattern rendering);
+# libgl1/libglib2.0-0 by opencv.
+RUN apt-get update && apt-get install -y \
+      git build-essential libcairo2 libgl1 libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
 
 # Pass a commit SHA to bust the cache: --build-arg CHATGARMENT_REF=$(git rev-parse HEAD)
 ARG CHATGARMENT_REF=main
@@ -42,5 +46,8 @@ RUN ln -s /opt/garment_code/assets /opt/ChatGarment/assets
 # Scripts hardcode a relative "checkpoints/..." path; point it at the network volume.
 # Dangling at build time, resolves once /workspace is mounted.
 RUN ln -s /workspace/checkpoints /opt/ChatGarment/checkpoints
+
+# Keep inference outputs on the volume so they survive pod termination.
+RUN ln -s /workspace/runs /opt/ChatGarment/runs
 
 WORKDIR /opt/ChatGarment
