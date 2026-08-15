@@ -2,9 +2,10 @@ FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
 RUN apt-get update && apt-get install -y git build-essential
 
+# Pass a commit SHA to bust the cache: --build-arg CHATGARMENT_REF=$(git rev-parse HEAD)
 ARG CHATGARMENT_REF=main
-RUN git clone --depth 1 --branch ${CHATGARMENT_REF} \
-      https://github.com/dirkneuhaeuser/ChatGarment.git /opt/ChatGarment
+RUN git clone https://github.com/dirkneuhaeuser/ChatGarment.git /opt/ChatGarment \
+ && git -C /opt/ChatGarment checkout ${CHATGARMENT_REF}
 
 WORKDIR /opt/ChatGarment
 
