@@ -2,15 +2,19 @@ FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
 RUN apt-get update && apt-get install -y git build-essential
 
-WORKDIR /opt/ChatGarment
+ARG CHATGARMENT_REF=main
+RUN git clone --depth 1 --branch ${CHATGARMENT_REF} \
+      https://github.com/dirkneuhaeuser/ChatGarment.git /opt/ChatGarment
 
-COPY . .
+WORKDIR /opt/ChatGarment
 
 RUN pip install --upgrade pip
 RUN pip install -e ".[train]"
 
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0"
-RUN pip install flash-attn==2.5.8 --no-build-isolation
+# Prebuilt wheel matching the base image (torch 2.4 / cu12.x / cp311 / abiFALSE).
+# Avoids a multi-hour source build.
+RUN pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v2.6.3/flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp311-cp311-linux_x86_64.whl"
 
 RUN git clone https://github.com/biansy000/GarmentCodeRC.git /opt/garment_code
 RUN pip install -e /opt/garment_code
