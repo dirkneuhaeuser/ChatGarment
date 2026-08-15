@@ -25,6 +25,17 @@ RUN pip install "https://github.com/Dao-AILab/flash-attention/releases/download/
 RUN git clone https://github.com/biansy000/GarmentCodeRC.git /opt/garment_code
 RUN pip install -e /opt/garment_code
 
+# pygarment's cloth sim needs a *custom fork* of NVIDIA Warp (not pip's warp-lang).
+# No wheels are published, so build it from source. Needs nvcc (present in the -devel
+# base) and git-lfs; no GPU required at build time.
+RUN apt-get update && apt-get install -y git-lfs && rm -rf /var/lib/apt/lists/* \
+ && git lfs install
+RUN git clone https://github.com/maria-korosteleva/NvidiaWarp-GarmentCode.git /opt/warp \
+ && cd /opt/warp \
+ && chmod +x tools/packman/packman \
+ && CUDA_PATH=/usr/local/cuda python build_lib.py --cuda_path=/usr/local/cuda \
+ && pip install -e /opt/warp
+
 ENV PYTHONPATH="/opt/garment_code"
 # Cache HF downloads (base LLaVA + CLIP tower) on the network volume, not the ephemeral container disk.
 ENV HF_HOME="/workspace/hf"
