@@ -21,6 +21,8 @@ RUN git clone https://github.com/biansy000/GarmentCodeRC.git /opt/garment_code
 RUN pip install -e /opt/garment_code
 
 ENV PYTHONPATH="/opt/garment_code"
+# Cache HF downloads (base LLaVA + CLIP tower) on the network volume, not the ephemeral container disk.
+ENV HF_HOME="/workspace/hf"
 
 WORKDIR /opt/garment_code
 RUN cp system.template.json system.json
@@ -35,5 +37,9 @@ RUN sed -i \
   system.json
 
 RUN ln -s /opt/garment_code/assets /opt/ChatGarment/assets
+
+# Scripts hardcode a relative "checkpoints/..." path; point it at the network volume.
+# Dangling at build time, resolves once /workspace is mounted.
+RUN ln -s /workspace/checkpoints /opt/ChatGarment/checkpoints
 
 WORKDIR /opt/ChatGarment

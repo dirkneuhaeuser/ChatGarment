@@ -1,13 +1,6 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=/is/software/nvidia/cuda-12.1/lib64
-export PATH=$PATH:/is/software/nvidia/cuda-12.1/bin
-export CUDA_HOME=/is/software/nvidia/cuda-12.1
 
-export CPATH=/is/software/nvidia/cudnn-8.4.1-cu11.6/include
-export C_INCLUDE_PATH=/is/software/nvidia/cudnn-8.4.1-cu11.6/include
-export LIBRARY_PATH=/is/software/nvidia/cudnn-8.4.1-cu11.6/lib64
-export LD_LIBRARY_PATH=$LIBRARY_PATH:$LD_LIBRARY_PATH
 
 export EGL_DEVICE_ID=$GPU_DEVICE_ORDINAL
 # export TCNN_CUDA_ARCHITECTURES=80
@@ -47,5 +40,5 @@ deepspeed scripts/evaluate_garment_v2_imggen_1float.py \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
-    --report_to wandb
+    --report_to none
 
