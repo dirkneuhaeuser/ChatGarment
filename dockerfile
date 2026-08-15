@@ -12,9 +12,10 @@ RUN pip install --upgrade pip
 RUN pip install -e ".[train]"
 
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0"
-# Prebuilt wheel matching the base image (torch 2.4 / cu12.x / cp311 / abiFALSE).
-# Avoids a multi-hour source build.
-RUN pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v2.6.3/flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp311-cp311-linux_x86_64.whl"
+# Prebuilt wheel. NOTE: `pip install -e ".[train]"` above pins torch 2.1.2+cu121,
+# downgrading the base image's 2.4 — so the wheel must be torch2.1, not torch2.4.
+# abiFALSE matches torch._C._GLIBCXX_USE_CXX11_ABI == False.
+RUN pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v2.5.8/flash_attn-2.5.8+cu122torch2.1cxx11abiFALSE-cp311-cp311-linux_x86_64.whl"
 
 RUN git clone https://github.com/biansy000/GarmentCodeRC.git /opt/garment_code
 RUN pip install -e /opt/garment_code
