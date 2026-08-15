@@ -16,6 +16,7 @@ import transformers
 import tokenizers
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append("/workspace/garment_code")
 
 from torch.utils.data import Dataset
 

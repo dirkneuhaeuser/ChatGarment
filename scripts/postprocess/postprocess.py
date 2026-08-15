@@ -12,6 +12,7 @@ import logging
 from easydict import EasyDict as edict
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append("/workspace/garment_code")
 
 from llava.garment_utils_v2 import try_generate_garments
 from llava.garment_lbs_utils import deform_garments

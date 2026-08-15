@@ -14,6 +14,7 @@ import transformers
 import tokenizers
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append("/workspace/garment_code")
 
 from llava.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from torch.utils.data import Dataset
