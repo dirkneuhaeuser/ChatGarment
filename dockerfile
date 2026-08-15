@@ -1,10 +1,13 @@
 FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
-# libcairo2 is needed by cairocffi (via pygarment's SVG pattern rendering);
-# libgl1/libglib2.0-0 by opencv.
+# libcairo2 for cairocffi (pygarment's SVG pattern rendering); libgl1/libglib2.0-0
+# for opencv; libegl1/libgles2/libglvnd0 for pyrender's headless EGL backend.
 RUN apt-get update && apt-get install -y \
       git build-essential libcairo2 libgl1 libglib2.0-0 \
+      libegl1 libgles2 libglvnd0 \
  && rm -rf /var/lib/apt/lists/*
+
+ENV PYOPENGL_PLATFORM=egl
 
 # Pass a commit SHA to bust the cache: --build-arg CHATGARMENT_REF=$(git rev-parse HEAD)
 ARG CHATGARMENT_REF=main
