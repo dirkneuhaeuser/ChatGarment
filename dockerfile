@@ -27,6 +27,9 @@ RUN pip install "https://github.com/Dao-AILab/flash-attention/releases/download/
 
 RUN git clone https://github.com/biansy000/GarmentCodeRC.git /opt/garment_code
 RUN pip install -e /opt/garment_code
+# pygarment calls igl.facet_components() expecting a flat array; libigl 2.6+ returns
+# (n,1), which breaks UV unwrapping in meshgen/render/texture_utils.py.
+RUN pip install "libigl==2.5.1"
 
 # pygarment's cloth sim needs a *custom fork* of NVIDIA Warp (not pip's warp-lang).
 # No wheels are published, so build it from source. Needs nvcc (present in the -devel
